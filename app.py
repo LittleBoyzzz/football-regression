@@ -67,7 +67,7 @@ with st.sidebar:
     contract = st.slider("สัญญาที่เหลือ (ปี)", 0, 5, 3)
     
     st.divider()
-    st.metric("Model Confidence", "85.4 %")
+    st.metric("Model Confidence", "85.4 % ✅ ")
 
 # 4. ส่วนการทำนายและแสดงกราฟ
 if st.button("ทำการพยากรณ์", key="predict_btn"):
@@ -76,7 +76,7 @@ if st.button("ทำการพยากรณ์", key="predict_btn"):
         prediction = model.predict(features)[0]
         
         # แสดงผลตัวเลข
-        st.success(f"### 💰 มูลค่าตัวที่คาดการณ์ : € {prediction:.2f} M")
+        st.success(f"###  มูลค่าตัวที่คาดการณ์ : € {prediction:.2f} M  💰 ")
         
         # กราฟเปรียบเทียบ
         fig, ax = plt.subplots(figsize=(8, 4))
@@ -85,15 +85,15 @@ if st.button("ทำการพยากรณ์", key="predict_btn"):
         fig.patch.set_facecolor('#0e1117')
         ax.set_facecolor('#1b4332')
         
-        labels = ['Your Player', 'Top 30 Avg']
+        labels = ['Player', 'Top 30 Avg']
         values = [prediction, 105.0]
         
         # วาดกราฟแท่ง
-        bars = ax.bar(labels, values, color=['#52b788', '#95d5b2'])
+        bars = ax.bar(labels, values, color=["#fdfdfd", "#000000"])
         
         # --- เพิ่มชื่อแกนตรงนี้ครับ ---
-        ax.set_ylabel('Market Value (Million Euro)', color='white', fontsize=12) # ชื่อแกนแนวตั้ง
-        ax.set_title('Value Comparison', color='white', fontsize=14, pad=15) # ชื่อหัวข้อกราฟ
+        ax.set_ylabel('Market Value ( € )', color='white', fontsize=12) # ชื่อแกนแนวตั้ง
+        ax.set_title('การเปรียบเทียบมูลค่า', color='white', fontsize=14, pad=15) # ชื่อหัวข้อกราฟ
         
         # ปรับสีตัวเลขแกน X และ Y ให้เป็นสีขาว
         ax.tick_params(axis='x', colors='white')
