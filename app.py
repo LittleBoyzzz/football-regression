@@ -3,63 +3,61 @@ import joblib
 import numpy as np
 import matplotlib.pyplot as plt
 
+# 1. ตั้งค่าหน้าเว็บและ CSS แบบ Modern Dark Sport
+st.set_page_config(page_title="Football Value Predictor 2026", page_icon="⚽")
+
 st.markdown("""
     <style>
-    /* 1. เปลี่ยนพื้นหลังทั้งหมดเป็นโทนเข้มแบบสปอร์ต */
+    /* พื้นหลังหลัก */
     .stApp {
-        background: linear-gradient(135deg, #111111 0%, #0a2e0a 100%);
-        color: #ffffff;
+        background: linear-gradient(135deg, #0e1117 0%, #072a07 100%);
     }
-
-    /* 2. ปรับแต่ง Sidebar ให้ดูหรูขึ้น */
+    
+    /* Sidebar สีเขียวเข้มแบบสปอร์ต */
     [data-testid="stSidebar"] {
-        background-color: rgba(0, 0, 0, 0.7);
-        border-right: 2px solid #2e7d32;
+        background-color: #1b4332 !important;
     }
-
-    /* 3. ปรับแต่งปุ่มกด (Button) ให้เป็นสีเขียวนีออน */
+    
+    /* ปรับแต่งปุ่มพยากรณ์ */
     .stButton>button {
         width: 100%;
-        border-radius: 12px;
-        background-color: #2e7d32;
-        color: white;
+        border-radius: 15px;
+        background-color: #2d6a4f !important;
+        color: #d8f3dc !important;
         font-weight: bold;
-        border: none;
-        padding: 0.6rem;
+        border: 2px solid #52b788 !important;
         transition: 0.3s;
-        box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
     }
     
     .stButton>button:hover {
-        background-color: #388e3c;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6);
+        background-color: #40916c !important;
+        box-shadow: 0px 0px 15px #52b788;
     }
 
-    /* 4. ปรับแต่ง Input Box */
-    .stNumberInput input {
-        background-color: #1e1e1e !important;
-        color: #ffffff !important;
-        border: 1px solid #2e7d32 !important;
-    }
-
-    /* 5. ปรับแต่ง Metric (ตัวเลข R-squared) */
-    [data-testid="stMetricValue"] {
-        color: #4caf50 !important;
-        font-size: 2rem;
-    }
-
-    /* 6. การ์ดแสดงผลลัพธ์ (Success Message) */
-    .stAlert {
-        background-color: rgba(46, 125, 50, 0.2);
-        border: 1px solid #4caf50;
-        color: #ffffff;
-        border-radius: 15px;
+    /* กล่องผลลัพธ์ */
+    .stSuccess {
+        background-color: rgba(45, 106, 79, 0.3) !important;
+        border: 1px solid #52b788 !important;
+        color: #d8f3dc !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. ส่วนรับข้อมูล (Sidebar)
+# 2. โหลดโมเดล (ย้ายออกมาข้างนอกเพื่อให้แน่ใจว่าตัวแปร model ถูกสร้างขึ้นแน่นอน)
+@st.cache_resource
+def load_my_model():
+    try:
+        return joblib.load('football_model.pkl')
+    except:
+        return None
+
+model = load_my_model()
+
+# 3. ส่วนแสดงผลหน้าเว็บ
+st.title("⚽ Football Value Predictor 2026")
+st.write("พยากรณ์มูลค่าตัวนักเตะจากสถิติและสัญญาปัจจุบัน")
+
+# Sidebar สำหรับรับข้อมูล
 with st.sidebar:
     st.header("📌 กรอกข้อมูลนักเตะ")
     age = st.number_input("อายุ (Age)", 15, 45, 25)
@@ -69,30 +67,29 @@ with st.sidebar:
     contract = st.slider("สัญญาที่เหลือ (ปี)", 0, 5, 3)
     
     st.divider()
-    st.subheader("📊 Model Info")
-    st.metric("R-squared", "85.4%") # ใส่ค่าที่เราเทรนได้จริง
+    st.metric("Model Confidence (R-squared)", "85.4%")
 
-# 4. ส่วนการทำนาย
-if st.button("ทำการพยากรณ์", key="main_prediction_btn"): # ใส่ Key เพื่อแก้ Duplicate Error
-    # เตรียมข้อมูล
-    features = np.array([[age, goals, assists, minutes, contract]])
-    prediction = model.predict(features)[0]
-    
-    # แสดงผล
-    st.success(f"### 💰 มูลค่าตัวที่คาดการณ์: {prediction:.2f} ล้านยูโร")
-    
-    # ลูกเล่น: กราฟเปรียบเทียบ
-    fig, ax = plt.subplots(figsize=(6, 4))
-    labels = ['Current Player', 'Average Top Player']
-    values = [prediction, 105.0] # 105 คือค่าเฉลี่ยสมมติ
-    ax.bar(labels, values, color=['#008000', '#D3D3D3'])
-    ax.set_ylabel('Market Value (M€)')
-    st.pyplot(fig)
-
-    # ลูกเล่น: เทียบชั้นนักเตะ
-    if prediction > 150:
-        st.info("⭐ ระดับ: Super Star (Mbappe/Haaland Class)")
-    elif prediction > 80:
-        st.info("🔥 ระดับ: World Class (Main League Starter)")
+# 4. ส่วนการทำนายและแสดงกราฟ
+if st.button("ทำการพยากรณ์", key="predict_btn"):
+    if model is not None:
+        features = np.array([[age, goals, assists, minutes, contract]])
+        prediction = model.predict(features)[0]
+        
+        # แสดงผลตัวเลข
+        st.success(f"### 💰 มูลค่าตัวที่คาดการณ์: {prediction:.2f} ล้านยูโร")
+        
+        # กราฟเปรียบเทียบ
+        fig, ax = plt.subplots(figsize=(8, 4))
+        plt.rcParams.update({'text.color': "white", 'axes.labelcolor': "white"})
+        fig.patch.set_facecolor('#0e1117')
+        ax.set_facecolor('#1b4332')
+        
+        labels = ['Your Player', 'Top 30 Avg']
+        values = [prediction, 105.0]
+        ax.bar(labels, values, color=['#52b788', '#95d5b2'])
+        ax.tick_params(axis='x', colors='white')
+        ax.tick_params(axis='y', colors='white')
+        
+        st.pyplot(fig)
     else:
-        st.info("🏃 ระดับ: Rising Star / Experienced Player")
+        st.error("❌ หาไฟล์ 'football_model.pkl' ไม่เจอ กรุณาตรวจสอบว่าอัปโหลดไฟล์ขึ้น GitHub หรือยัง")
