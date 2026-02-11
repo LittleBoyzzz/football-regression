@@ -83,17 +83,17 @@ if st.button("ทำการพยากรณ์", key="predict_btn"):
         
         # ปรับสีพื้นหลังกราฟให้เข้ากับธีมมืด
         fig.patch.set_facecolor('#0e1117')
-        ax.set_facecolor('#1b4332')
+        ax.set_facecolor("#ffffff")
         
         labels = ['Player', 'Top 30 Avg']
         values = [prediction, 105.0]
         
         # วาดกราฟแท่ง
-        bars = ax.bar(labels, values, color=["#fdfdfd", "#000000"])
+        bars = ax.bar(labels, values, color=["#ff0000", "#0004FF"])
         
         # --- เพิ่มชื่อแกนตรงนี้ครับ ---
         ax.set_ylabel('Market Value ( € )', color='white', fontsize=12) # ชื่อแกนแนวตั้ง
-        ax.set_title('การเปรียบเทียบมูลค่า', color='white', fontsize=14, pad=15) # ชื่อหัวข้อกราฟ
+        ax.set_title('Value Comparison', color='white', fontsize=14, pad=15) # ชื่อหัวข้อกราฟ
         
         # ปรับสีตัวเลขแกน X และ Y ให้เป็นสีขาว
         ax.tick_params(axis='x', colors='white')
