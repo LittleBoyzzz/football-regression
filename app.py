@@ -4,22 +4,32 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 1. ตั้งค่าหน้าเว็บและ CSS
-st.set_page_config(page_title="Football Predictor 2026", page_icon="⚽")
 st.markdown("""
     <style>
-    .stApp { background-color: #f4f7f6; }
-    .stButton>button { width: 100%; border-radius: 10px; background-color: #008000; color: white; }
+    /* 1. พื้นหลังของหน้าแอปทั้งหมด */
+    .stApp {
+        background-color: #e8f5e9; /* สีเขียวอ่อนแบบสบายตา */
+    }
+    
+    /* 2. ปรับแต่งกล่อง Sidebar ด้านข้าง */
+    [data-testid="stSidebar"] {
+        background-color: #2e7d32;
+        color: white;
+    }
+    
+    /* 3. ทำให้ตัวหนังสือใน Sidebar เป็นสีขาว */
+    [data-testid="stSidebar"] .stMarkdown p {
+        color: white;
+    }
+    
+    /* 4. ปรับแต่งปุ่มกดให้เด่นขึ้น */
+    .stButton>button {
+        background-color: #1b5e20 !important;
+        color: white !important;
+        border: 2px solid #ffffff;
+    }
     </style>
     """, unsafe_allow_html=True)
-
-# 2. โหลดโมเดล (ตรวจสอบชื่อไฟล์ให้ตรงกับใน GitHub)
-try:
-    model = joblib.load('football_model.pkl')
-except:
-    st.error("❌ ไม่พบไฟล์ football_model.pkl กรุณาตรวจสอบบน GitHub")
-
-st.title("⚽ Football Value Predictor 2026")
-st.write("พยากรณ์มูลค่าตัวนักเตะระดับโลกด้วย Machine Learning")
 
 # 3. ส่วนรับข้อมูล (Sidebar)
 with st.sidebar:
