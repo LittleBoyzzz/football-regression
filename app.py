@@ -3,30 +3,58 @@ import joblib
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 1. ตั้งค่าหน้าเว็บและ CSS
 st.markdown("""
     <style>
-    /* 1. พื้นหลังของหน้าแอปทั้งหมด */
+    /* 1. เปลี่ยนพื้นหลังทั้งหมดเป็นโทนเข้มแบบสปอร์ต */
     .stApp {
-        background-color: #e8f5e9; /* สีเขียวอ่อนแบบสบายตา */
+        background: linear-gradient(135deg, #111111 0%, #0a2e0a 100%);
+        color: #ffffff;
     }
-    
-    /* 2. ปรับแต่งกล่อง Sidebar ด้านข้าง */
+
+    /* 2. ปรับแต่ง Sidebar ให้ดูหรูขึ้น */
     [data-testid="stSidebar"] {
+        background-color: rgba(0, 0, 0, 0.7);
+        border-right: 2px solid #2e7d32;
+    }
+
+    /* 3. ปรับแต่งปุ่มกด (Button) ให้เป็นสีเขียวนีออน */
+    .stButton>button {
+        width: 100%;
+        border-radius: 12px;
         background-color: #2e7d32;
         color: white;
+        font-weight: bold;
+        border: none;
+        padding: 0.6rem;
+        transition: 0.3s;
+        box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
     }
     
-    /* 3. ทำให้ตัวหนังสือใน Sidebar เป็นสีขาว */
-    [data-testid="stSidebar"] .stMarkdown p {
-        color: white;
+    .stButton>button:hover {
+        background-color: #388e3c;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6);
     }
-    
-    /* 4. ปรับแต่งปุ่มกดให้เด่นขึ้น */
-    .stButton>button {
-        background-color: #1b5e20 !important;
-        color: white !important;
-        border: 2px solid #ffffff;
+
+    /* 4. ปรับแต่ง Input Box */
+    .stNumberInput input {
+        background-color: #1e1e1e !important;
+        color: #ffffff !important;
+        border: 1px solid #2e7d32 !important;
+    }
+
+    /* 5. ปรับแต่ง Metric (ตัวเลข R-squared) */
+    [data-testid="stMetricValue"] {
+        color: #4caf50 !important;
+        font-size: 2rem;
+    }
+
+    /* 6. การ์ดแสดงผลลัพธ์ (Success Message) */
+    .stAlert {
+        background-color: rgba(46, 125, 50, 0.2);
+        border: 1px solid #4caf50;
+        color: #ffffff;
+        border-radius: 15px;
     }
     </style>
     """, unsafe_allow_html=True)
